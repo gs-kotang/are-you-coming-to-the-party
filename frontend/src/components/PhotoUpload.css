@@ -191,3 +191,14 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.photo-upload-error {
+  margin: 0.75rem 0 0;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(225, 48, 108, 0.25);
+  background: #fff0f6;
+  color: #c13584;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
