@@ -7,6 +7,7 @@ export interface RsvpResponse {
 export interface InviteSummaryResponse {
   id: string;
   imageUrl: string;
+  eventAt: string;
   expiresAt: string;
   isExpired: boolean;
   rsvpCount: number;
@@ -21,6 +22,7 @@ export interface InviteDetailResponse extends InviteSummaryResponse {
 export interface PublicInviteResponse {
   id: string;
   imageUrl: string;
+  eventAt: string;
   expiresAt: string;
   isExpired: boolean;
 }
@@ -28,6 +30,7 @@ export interface PublicInviteResponse {
 export interface CreateInviteResponse {
   id: string;
   imageUrl: string;
+  eventAt: string;
   expiresAt: string;
   shareUrl: string;
   createdAt: string;

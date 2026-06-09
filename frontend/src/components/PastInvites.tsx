@@ -61,6 +61,7 @@ export function PastInvites() {
                 <div className="invite-meta">
                   <h3>Invite</h3>
                   <p>Created {formatDate(invite.createdAt)}</p>
+                  <p>Event {formatDate(invite.eventAt)}</p>
                   <p>RSVP by {formatDate(invite.expiresAt)}</p>
                   <span className={`badge ${invite.isExpired ? 'badge-expired' : 'badge-open'}`}>
                     {invite.isExpired ? 'Closed' : 'Open'}

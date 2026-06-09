@@ -86,6 +86,9 @@ export function InviteDetailPage() {
             </div>
           </div>
           <p style={{ color: '#65676b' }}>
+            Event: {formatDate(invite.eventAt)}
+          </p>
+          <p style={{ color: '#65676b' }}>
             RSVP deadline: {formatDate(invite.expiresAt)}
           </p>
         </div>

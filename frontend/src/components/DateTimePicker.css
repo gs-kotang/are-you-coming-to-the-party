@@ -46,15 +46,19 @@
 }
 
 .datetime-display-value {
-  margin: 0;
-  font-size: 1.15rem;
+  margin: 0 0 0.85rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.35;
 }
 
+.datetime-quick-select {
+  margin-top: 0.85rem;
+}
+
 .datetime-display-relative {
-  margin: 0.35rem 0 0;
+  margin: 0.75rem 0 0;
   font-size: 0.875rem;
   color: var(--text-secondary);
 }
@@ -63,24 +67,23 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .datetime-preset {
-  padding: 0.45rem 0.9rem;
-  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(225, 48, 108, 0.15);
   border-radius: 999px;
-  background: white;
+  background: rgba(255, 255, 255, 0.92);
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
 .datetime-preset:hover {
   border-color: var(--ig-pink);
-  background: #fff5f9;
+  background: white;
 }
 
 .datetime-preset.active {
@@ -103,7 +106,7 @@
 }
 
 .datetime-field label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -112,13 +115,13 @@
 
 .datetime-field input {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 1rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(225, 48, 108, 0.15);
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-primary);
-  background: white;
+  background: rgba(255, 255, 255, 0.92);
   transition: border-color 0.15s, box-shadow 0.15s;
   appearance: none;
   -webkit-appearance: none;
@@ -128,6 +131,7 @@
   outline: none;
   border-color: var(--ig-pink);
   box-shadow: 0 0 0 3px rgba(225, 48, 108, 0.12);
+  background: white;
 }
 
 @media (max-width: 480px) {

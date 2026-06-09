@@ -22,6 +22,7 @@ model Invite {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   imagePath String
+  eventAt   DateTime
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

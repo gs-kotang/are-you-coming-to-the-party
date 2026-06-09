@@ -133,19 +133,25 @@ export function PublicRsvp() {
           <>
             <h1>RSVPs are closed</h1>
             <p style={{ color: '#65676b' }}>
-              The deadline was {formatDate(invite.expiresAt)}.
+              The party is {formatDate(invite.eventAt)}.
+            </p>
+            <p style={{ color: '#65676b' }}>
+              The RSVP deadline was {formatDate(invite.expiresAt)}.
             </p>
           </>
         ) : submitted ? (
           <>
             <h1>You&apos;re on the list!</h1>
             <p style={{ color: '#65676b' }}>
-              Thanks, {name.trim()} — see you at the party.
+              Thanks, {name.trim()} — see you at the party on {formatDate(invite.eventAt)}.
             </p>
           </>
         ) : (
           <>
             <p className="question">Are you coming?</p>
+            <p style={{ color: '#65676b', marginBottom: '0.35rem', fontWeight: 600 }}>
+              {formatDate(invite.eventAt)}
+            </p>
             <p style={{ color: '#65676b', marginBottom: '1rem' }}>
               RSVP by {formatDate(invite.expiresAt)}
             </p>

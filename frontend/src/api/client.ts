@@ -42,10 +42,15 @@ export function getShareUrl(path: string): string {
   return `${window.location.origin}${path}`;
 }
 
-export async function createInvite(photo: File, expiresAt: string): Promise<CreateInviteResult> {
+export async function createInvite(
+  photo: File,
+  expiresAt: string,
+  eventAt: string
+): Promise<CreateInviteResult> {
   const data = new FormData();
   data.append('photo', photo);
   data.append('expiresAt', expiresAt);
+  data.append('eventAt', eventAt);
 
   const response = await apiClient.post<CreateInviteResult>('/invites', data, {
     headers: { 'Content-Type': 'multipart/form-data' },

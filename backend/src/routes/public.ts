@@ -27,6 +27,7 @@ router.get('/invites/:id', async (req: Request, res: Response) => {
     const response: PublicInviteResponse = {
       id: invite.id,
       imageUrl: getFileUrl(invite.imagePath),
+      eventAt: invite.eventAt.toISOString(),
       expiresAt: invite.expiresAt.toISOString(),
       isExpired: isExpired(invite.expiresAt),
     };

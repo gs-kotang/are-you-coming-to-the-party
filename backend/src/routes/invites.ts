@@ -20,6 +20,7 @@ function isExpired(expiresAt: Date): boolean {
 function toSummary(invite: {
   id: string;
   imagePath: string;
+  eventAt: Date;
   expiresAt: Date;
   createdAt: Date;
   _count: { rsvps: number };
@@ -27,6 +28,7 @@ function toSummary(invite: {
   return {
     id: invite.id,
     imageUrl: getFileUrl(invite.imagePath),
+    eventAt: invite.eventAt.toISOString(),
     expiresAt: invite.expiresAt.toISOString(),
     isExpired: isExpired(invite.expiresAt),
     rsvpCount: invite._count.rsvps,
@@ -40,10 +42,14 @@ router.post(
   upload.single('photo'),
   async (req: Request, res: Response) => {
     try {
-      const { expiresAt } = req.body;
+      const { expiresAt, eventAt } = req.body;
 
       if (!expiresAt) {
         return res.status(400).json({ error: 'expiresAt is required' });
+      }
+
+      if (!eventAt) {
+        return res.status(400).json({ error: 'eventAt is required' });
       }
 
       const expiryDate = new Date(expiresAt);
@@ -51,8 +57,21 @@ router.post(
         return res.status(400).json({ error: 'Invalid expiresAt date' });
       }
 
+      const eventDate = new Date(eventAt);
+      if (Number.isNaN(eventDate.getTime())) {
+        return res.status(400).json({ error: 'Invalid eventAt date' });
+      }
+
       if (expiryDate.getTime() <= Date.now()) {
         return res.status(400).json({ error: 'Expiry must be in the future' });
+      }
+
+      if (eventDate.getTime() <= Date.now()) {
+        return res.status(400).json({ error: 'Event time must be in the future' });
+      }
+
+      if (eventDate.getTime() <= expiryDate.getTime()) {
+        return res.status(400).json({ error: 'Event time must be after the RSVP deadline' });
       }
 
       if (!req.file) {
@@ -72,6 +91,7 @@ router.post(
         data: {
           userId: req.user!.uid,
           imagePath,
+          eventAt: eventDate,
           expiresAt: expiryDate,
         },
       });
@@ -79,6 +99,7 @@ router.post(
       const response: CreateInviteResponse = {
         id: invite.id,
         imageUrl: getFileUrl(invite.imagePath),
+        eventAt: invite.eventAt.toISOString(),
         expiresAt: invite.expiresAt.toISOString(),
         shareUrl: `/invite/${invite.id}`,
         createdAt: invite.createdAt.toISOString(),

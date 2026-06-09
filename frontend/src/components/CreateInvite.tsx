@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createInvite, getShareUrl } from '../api/client';
 import { PhotoUpload } from './PhotoUpload';
-import { DateTimePicker, defaultExpiry } from './DateTimePicker';
+import { DateTimePicker, defaultEventAt, defaultExpiry } from './DateTimePicker';
 
 export function CreateInvite() {
   const [photo, setPhoto] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [eventAt, setEventAt] = useState(defaultEventAt());
   const [expiresAt, setExpiresAt] = useState(defaultExpiry());
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,10 +36,21 @@ export function CreateInvite() {
       return;
     }
 
+    const eventDate = new Date(eventAt);
+    const expiryDate = new Date(expiresAt);
+    if (eventDate.getTime() <= expiryDate.getTime()) {
+      setError('Event time must be after the RSVP deadline.');
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      const result = await createInvite(photo, new Date(expiresAt).toISOString());
+      const result = await createInvite(
+        photo,
+        new Date(expiresAt).toISOString(),
+        new Date(eventAt).toISOString()
+      );
       setShareUrl(getShareUrl(result.shareUrl));
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to create invite.');
@@ -63,13 +75,24 @@ export function CreateInvite() {
       <div className="card" style={{ marginTop: '1rem' }}>
         <h2>Create new invite</h2>
         <p style={{ color: '#65676b' }}>
-          Upload your invite image and set when RSVPs should close.
+          Upload your invite image, set when the party is, and choose when RSVPs should close.
         </p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Invite photo</label>
             <PhotoUpload previewUrl={previewUrl} onChange={handlePhotoChange} />
+          </div>
+
+          <div className="form-group">
+            <label>Event time</label>
+            <DateTimePicker
+              value={eventAt}
+              onChange={setEventAt}
+              idPrefix="event-time"
+              displayLabel="Event time"
+              relativeMode="event"
+            />
           </div>
 
           <div className="form-group">

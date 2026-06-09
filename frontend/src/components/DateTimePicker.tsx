@@ -4,6 +4,11 @@ import './DateTimePicker.css';
 interface DateTimePickerProps {
   value: string;
   onChange: (value: string) => void;
+  idPrefix?: string;
+  displayLabel?: string;
+  showPresets?: boolean;
+  showRelative?: boolean;
+  relativeMode?: 'deadline' | 'event';
 }
 
 interface Preset {
@@ -77,22 +82,37 @@ function formatFriendly(value: string): string {
   });
 }
 
-function formatRelative(value: string): string {
+function formatRelative(value: string, mode: 'deadline' | 'event' = 'deadline'): string {
   const target = new Date(value);
   const now = new Date();
   if (Number.isNaN(target.getTime())) return '';
 
   const diffMs = target.getTime() - now.getTime();
-  if (diffMs <= 0) return 'Deadline is in the past';
+  if (diffMs <= 0) {
+    return mode === 'event' ? 'Event time is in the past' : 'Deadline is in the past';
+  }
 
   const diffMins = Math.round(diffMs / 60000);
-  if (diffMins < 60) return `Closes in ${diffMins} minute${diffMins === 1 ? '' : 's'}`;
+  if (diffMins < 60) {
+    const suffix = diffMins === 1 ? '' : 's';
+    return mode === 'event'
+      ? `In ${diffMins} minute${suffix}`
+      : `Closes in ${diffMins} minute${suffix}`;
+  }
 
   const diffHours = Math.round(diffMins / 60);
-  if (diffHours < 48) return `Closes in ${diffHours} hour${diffHours === 1 ? '' : 's'}`;
+  if (diffHours < 48) {
+    const suffix = diffHours === 1 ? '' : 's';
+    return mode === 'event'
+      ? `In ${diffHours} hour${suffix}`
+      : `Closes in ${diffHours} hour${suffix}`;
+  }
 
   const diffDays = Math.round(diffHours / 24);
-  return `Closes in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+  const suffix = diffDays === 1 ? '' : 's';
+  return mode === 'event'
+    ? `In ${diffDays} day${suffix}`
+    : `Closes in ${diffDays} day${suffix}`;
 }
 
 const PRESETS = buildPresets();
@@ -101,12 +121,25 @@ export function defaultExpiry(): string {
   return PRESETS.find((p) => p.id === '1week-6')!.getValue();
 }
 
-export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
+export function defaultEventAt(): string {
+  return PRESETS.find((p) => p.id === '2weeks-8')!.getValue();
+}
+
+export function DateTimePicker({
+  value,
+  onChange,
+  idPrefix = 'rsvp-deadline',
+  displayLabel = 'RSVP closes',
+  showPresets = true,
+  showRelative = true,
+  relativeMode = 'deadline',
+}: DateTimePickerProps) {
   const [datePart, timePart] = value.split('T');
 
   const activePresetId = useMemo(() => {
+    if (!showPresets) return null;
     return PRESETS.find((preset) => preset.getValue() === value)?.id ?? null;
-  }, [value]);
+  }, [value, showPresets]);
 
   const handleDateChange = (newDate: string) => {
     onChange(`${newDate}T${timePart || '18:00'}`);
@@ -126,46 +159,50 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
           </svg>
         </div>
         <div className="datetime-display-text">
-          <p className="datetime-display-label">RSVP closes</p>
+          <p className="datetime-display-label">{displayLabel}</p>
           <p className="datetime-display-value">{formatFriendly(value)}</p>
-          <p className="datetime-display-relative">{formatRelative(value)}</p>
-        </div>
-      </div>
-
-      <div className="datetime-presets">
-        {PRESETS.map((preset) => (
-          <button
-            key={preset.id}
-            type="button"
-            className={`datetime-preset ${activePresetId === preset.id ? 'active' : ''}`}
-            onClick={() => onChange(preset.getValue())}
-          >
-            {preset.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="datetime-inputs">
-        <div className="datetime-field">
-          <label htmlFor="expires-date">Date</label>
-          <input
-            id="expires-date"
-            type="date"
-            value={datePart}
-            min={toDatetimeLocal(new Date()).slice(0, 10)}
-            onChange={(e) => handleDateChange(e.target.value)}
-            required
-          />
-        </div>
-        <div className="datetime-field">
-          <label htmlFor="expires-time">Time</label>
-          <input
-            id="expires-time"
-            type="time"
-            value={timePart}
-            onChange={(e) => handleTimeChange(e.target.value)}
-            required
-          />
+          <div className="datetime-inputs">
+            <div className="datetime-field">
+              <label htmlFor={`${idPrefix}-date`}>Date</label>
+              <input
+                id={`${idPrefix}-date`}
+                type="date"
+                value={datePart}
+                min={toDatetimeLocal(new Date()).slice(0, 10)}
+                onChange={(e) => handleDateChange(e.target.value)}
+                required
+              />
+            </div>
+            <div className="datetime-field">
+              <label htmlFor={`${idPrefix}-time`}>Time</label>
+              <input
+                id={`${idPrefix}-time`}
+                type="time"
+                value={timePart}
+                onChange={(e) => handleTimeChange(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          {showPresets && (
+            <div className="datetime-quick-select">
+              <div className="datetime-presets">
+                {PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    className={`datetime-preset ${activePresetId === preset.id ? 'active' : ''}`}
+                    onClick={() => onChange(preset.getValue())}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {showRelative && (
+            <p className="datetime-display-relative">{formatRelative(value, relativeMode)}</p>
+          )}
         </div>
       </div>
     </div>
