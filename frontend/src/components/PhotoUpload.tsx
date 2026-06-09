@@ -16,6 +16,9 @@ export function PhotoUpload({ onChange, previewUrl }: PhotoUploadProps) {
   const handleFile = (file: File | undefined) => {
     if (!file) return;
     if (!ACCEPT.split(',').includes(file.type)) {
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
       return;
     }
     setFileName(file.name);
@@ -42,7 +45,13 @@ export function PhotoUpload({ onChange, previewUrl }: PhotoUploadProps) {
     handleFile(event.dataTransfer.files?.[0]);
   };
 
-  const openPicker = () => inputRef.current?.click();
+  const openPicker = () => {
+    if (inputRef.current) {
+      // Reset so selecting the same file again still fires onChange
+      inputRef.current.value = '';
+      inputRef.current.click();
+    }
+  };
 
   const handleRemove = () => {
     setFileName(null);
@@ -123,7 +132,14 @@ export function PhotoUpload({ onChange, previewUrl }: PhotoUploadProps) {
         </div>
         <p className="photo-upload-title">Drop your invite here</p>
         <p className="photo-upload-hint">PNG, JPG or WebP · up to 10 MB</p>
-        <button type="button" className="photo-upload-browse" onClick={openPicker}>
+        <button
+          type="button"
+          className="photo-upload-browse"
+          onClick={(event) => {
+            event.stopPropagation();
+            openPicker();
+          }}
+        >
           Choose photo
         </button>
       </div>
