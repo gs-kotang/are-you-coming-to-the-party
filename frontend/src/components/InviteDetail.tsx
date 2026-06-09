@@ -72,7 +72,9 @@ export function InviteDetailPage() {
 
       <div className="detail-layout">
         <div>
-          <img src={invite.imageUrl} alt="Invite" className="detail-image" />
+          <div className="invite-full-frame">
+            <img src={invite.imageUrl} alt="Invite" className="invite-full-image" />
+          </div>
           <div className="stats-row">
             <div className="stat-card">
               <strong>{invite.rsvpCount}</strong>

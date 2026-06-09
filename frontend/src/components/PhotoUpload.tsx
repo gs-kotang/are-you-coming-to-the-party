@@ -63,7 +63,9 @@ export function PhotoUpload({ onChange, previewUrl }: PhotoUploadProps) {
           onChange={handleInputChange}
         />
         <div className="photo-upload-preview">
-          <img src={previewUrl} alt="Invite preview" />
+          <div className="invite-full-frame">
+            <img src={previewUrl} alt="Invite preview" className="invite-full-image" />
+          </div>
           <div className="photo-upload-preview-overlay">
             {fileName && <p className="photo-upload-filename">{fileName}</p>}
             <div className="photo-upload-actions">

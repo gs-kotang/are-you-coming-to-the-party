@@ -341,10 +341,23 @@
   gap: 1.5rem;
 }
 
-.detail-image {
-  width: 100%;
+/* Full invite — same treatment on upload preview, public RSVP, and detail */
+.invite-full-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff5f9 0%, #fce4ec 50%, #f3e5f5 100%);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.invite-full-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(70vh, 640px);
+  object-fit: contain;
 }
 
 .stats-row {
@@ -411,11 +424,7 @@
   backdrop-filter: blur(8px);
 }
 
-.public-card img {
-  width: 100%;
-  max-height: 360px;
-  object-fit: cover;
-  border-radius: 12px;
+.public-card .invite-full-frame {
   margin-bottom: 1.5rem;
 }
 

@@ -79,7 +79,9 @@ export function PublicRsvp() {
   return (
     <div className="public-page">
       <div className="public-card">
-        <img src={invite.imageUrl} alt="Party invite" />
+        <div className="invite-full-frame">
+          <img src={invite.imageUrl} alt="Party invite" className="invite-full-image" />
+        </div>
 
         {invite.isExpired ? (
           <>
