@@ -75,10 +75,7 @@ router.post('/invites/:id/rsvp', async (req: Request, res: Response) => {
       name: rsvp.name,
       createdAt: rsvp.createdAt.toISOString(),
     });
-  } catch (error: any) {
-    if (error?.code === 'P2002') {
-      return res.status(409).json({ error: 'Someone with that name already RSVP\'d yes.' });
-    }
+  } catch (error) {
     console.error('RSVP error:', error);
     res.status(500).json({ error: 'Failed to save RSVP' });
   }

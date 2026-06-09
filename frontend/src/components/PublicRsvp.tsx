@@ -10,6 +10,30 @@ function formatDate(iso: string): string {
   });
 }
 
+const ALLOWED_NAME_KEYS = new Set([
+  'Backspace',
+  'Delete',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'Tab',
+  'Home',
+  'End',
+  'Enter',
+]);
+
+function sanitizeName(value: string): string {
+  return value.replace(/[^a-zA-Z\s]/g, '');
+}
+
+function isAllowedNameKey(key: string): boolean {
+  if (key.length === 1) {
+    return /^[a-zA-Z\s]$/.test(key);
+  }
+  return ALLOWED_NAME_KEYS.has(key);
+}
+
 export function PublicRsvp() {
   const { id } = useParams<{ id: string }>();
   const [invite, setInvite] = useState<PublicInvite | null>(null);
@@ -36,6 +60,28 @@ export function PublicRsvp() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNameKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+    if (!isAllowedNameKey(event.key)) {
+      event.preventDefault();
+    }
+  };
+
+  const handleNamePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const pasted = sanitizeName(event.clipboardData.getData('text'));
+    if (!pasted) {
+      return;
+    }
+
+    const input = event.currentTarget;
+    const start = input.selectionStart ?? name.length;
+    const end = input.selectionEnd ?? name.length;
+    setName(sanitizeName(name.slice(0, start) + pasted + name.slice(end)).slice(0, 100));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -109,8 +155,13 @@ export function PublicRsvp() {
                 type="text"
                 placeholder="Your name"
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => setName(sanitizeName(event.target.value))}
+                onKeyDown={handleNameKeyDown}
+                onPaste={handleNamePaste}
                 maxLength={100}
+                pattern="[a-zA-Z\s]+"
+                title="Letters only"
+                autoComplete="off"
                 required
               />
 

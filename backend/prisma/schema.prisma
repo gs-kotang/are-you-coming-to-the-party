@@ -37,6 +37,5 @@ model Rsvp {
   name      String
   createdAt DateTime @default(now())
 
-  @@unique([inviteId, name])
   @@index([inviteId])
 }
