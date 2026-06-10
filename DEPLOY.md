@@ -35,9 +35,12 @@ Same stack as People Journal:
 | `R2_BUCKET` | R2 bucket name |
 | `R2_ACCESS_KEY_ID` | R2 API token |
 | `R2_SECRET_ACCESS_KEY` | R2 secret |
+| `R2_ENDPOINT` | **Required.** Your account S3 API URL from Cloudflare R2 → Overview (e.g. `https://ACCOUNT_ID.r2.cloudflarestorage.com`) |
 | `R2_PUBLIC_URL` | Public bucket URL (e.g. `https://pub-xxx.r2.dev`) |
 
-Optional: `R2_ENDPOINT`, `R2_REGION` (default `auto`).
+Optional: `R2_REGION` (default `auto`).
+
+After deploy, check `https://your-backend.onrender.com/health` — `r2EndpointConfigured` should be `true` and `dbSchemaOk` should be `true`.
 
 ### Frontend (Cloudflare Pages)
 

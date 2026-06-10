@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import multer from 'multer';
 import { PrismaClient } from '@prisma/client';
 import { authenticate } from '../middleware/auth';
 import { upload, getFileUrl } from '../middleware/upload';
@@ -36,10 +37,39 @@ function toSummary(invite: {
   };
 }
 
+function handlePhotoUpload(req: Request, res: Response, next: NextFunction) {
+  upload.single('photo')(req, res, (error) => {
+    if (error instanceof multer.MulterError) {
+      return res.status(400).json({ error: error.message });
+    }
+    if (error) {
+      return res.status(400).json({ error: error.message || 'Invalid file upload' });
+    }
+    next();
+  });
+}
+
+function inviteErrorMessage(error: unknown): string {
+  const err = error as { code?: string; name?: string; message?: string; Code?: string };
+  if (err?.code === 'P2022') {
+    return 'Database schema is out of date. Run prisma migrate deploy on the server database.';
+  }
+  if (err?.message?.includes('R2_ENDPOINT')) {
+    return 'Image storage misconfigured: set R2_ENDPOINT in server environment variables.';
+  }
+  if (err?.message?.includes('R2 storage is enabled')) {
+    return 'Image storage misconfigured: check R2_BUCKET, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY.';
+  }
+  if (err?.name === 'CredentialsProviderError' || err?.Code === 'AccessDenied' || err?.name === 'InvalidAccessKeyId') {
+    return 'Image upload failed: check R2 credentials and R2_ENDPOINT match your Cloudflare account.';
+  }
+  return 'Failed to create invite';
+}
+
 router.post(
   '/',
   authenticate,
-  upload.single('photo'),
+  handlePhotoUpload,
   async (req: Request, res: Response) => {
     try {
       const { expiresAt, eventAt } = req.body;
@@ -82,7 +112,7 @@ router.post(
 
       if (config.useR2 && req.file.buffer) {
         const key = generateUploadFilename(req.file.originalname);
-        imagePath = await uploadToR2(req.file.buffer, key, req.file.mimetype);
+        imagePath = await uploadToR2(req.file.buffer, key, req.file.mimetype, req.file.originalname);
       } else {
         imagePath = req.file.filename;
       }
@@ -108,7 +138,7 @@ router.post(
       res.status(201).json(response);
     } catch (error) {
       console.error('Create invite error:', error);
-      res.status(500).json({ error: 'Failed to create invite' });
+      res.status(500).json({ error: inviteErrorMessage(error) });
     }
   }
 );

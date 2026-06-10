@@ -1,4 +1,5 @@
-const r2Endpoint = process.env.R2_ENDPOINT || 'https://0f194a3a30bff7bd7f03ab3d1a0baf0a.r2.cloudflarestorage.com';
+// Must match your Cloudflare account — R2 → Overview → "S3 API" endpoint
+const r2Endpoint = process.env.R2_ENDPOINT || null;
 
 const corsOriginEnv = process.env.CORS_ORIGIN || 'http://localhost:5174';
 const corsOrigins = corsOriginEnv.split(',').map((o) => o.trim()).filter(Boolean);

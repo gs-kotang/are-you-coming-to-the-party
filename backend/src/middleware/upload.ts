@@ -2,6 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { config } from '../config';
+import { isAcceptedImage } from '../utils/imageValidation';
 
 const uploadsDir = path.join(process.cwd(), config.uploadsDir);
 if (!config.useR2 && !fs.existsSync(uploadsDir)) {
@@ -20,10 +21,10 @@ const diskStorage = multer.diskStorage({
 const memoryStorage = multer.memoryStorage();
 
 const fileFilter = (_req: unknown, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  if (config.allowedMimeTypes.includes(file.mimetype)) {
+  if (isAcceptedImage(file.mimetype, file.originalname)) {
     cb(null, true);
   } else {
-    cb(new Error(`Invalid file type. Allowed: ${config.allowedMimeTypes.join(', ')}`));
+    cb(new Error('Invalid file type. Allowed: PNG, JPG, or WebP.'));
   }
 };
 
