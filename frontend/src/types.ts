@@ -14,6 +14,13 @@ export interface InviteSummary {
   createdAt: string;
 }
 
+export interface PaginatedInvites {
+  invites: InviteSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface InviteDetail extends InviteSummary {
   shareUrl: string;
   rsvps: Rsvp[];

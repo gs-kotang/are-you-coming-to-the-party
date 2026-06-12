@@ -62,8 +62,8 @@ export function InviteDetailPage() {
   return (
     <div>
       <div className="detail-header">
-        <Link to="/invites" className="back-button">
-          ← Back to invites
+        <Link to="/" className="back-button">
+          ← Back
         </Link>
         <button type="button" className="copy-button" onClick={handleCopyLink}>
           {copied ? 'Copied!' : 'Copy share link'}

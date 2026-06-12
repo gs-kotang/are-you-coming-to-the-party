@@ -116,13 +116,150 @@
   border-radius: 12px;
 }
 
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .home-actions {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem 1rem 0.5rem;
+}
+
+.home-actions::before {
+  content: '';
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, 90vw);
+  height: 140px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(193, 53, 132, 0.14) 0%,
+    rgba(131, 58, 180, 0.08) 45%,
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.home-create-button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
-  min-height: 50vh;
+  min-width: 300px;
+  padding: 1.2rem 2.75rem;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(
+    145deg,
+    #9b4dca 0%,
+    #b83280 32%,
+    #d6246e 65%,
+    #e8457a 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 2px 4px rgba(131, 58, 180, 0.15),
+    0 8px 28px rgba(193, 53, 132, 0.38),
+    0 16px 48px rgba(131, 58, 180, 0.12);
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 0.22s ease;
+}
+
+.home-create-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.04) 42%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.home-create-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 4px 8px rgba(131, 58, 180, 0.18),
+    0 12px 36px rgba(193, 53, 132, 0.45),
+    0 20px 56px rgba(131, 58, 180, 0.16);
+  color: #fff;
+}
+
+.home-create-button:active {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 4px 16px rgba(193, 53, 132, 0.32);
+}
+
+.past-invites h2 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.pagination-button {
+  min-width: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  border-color: var(--ig-pink);
+  background: #fff5f9;
+}
+
+.pagination-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-button-active {
+  background: var(--ig-gradient-pink);
+  color: white;
+  border-color: transparent;
+}
+
+.pagination-button-active:hover:not(:disabled) {
+  background: var(--ig-gradient-pink);
+  color: white;
 }
 
 .primary-button {
@@ -467,6 +604,13 @@
 }
 
 @media (max-width: 768px) {
+  .home-create-button {
+    width: 100%;
+    min-width: unset;
+    padding: 1.15rem 1.5rem;
+    font-size: 1.1rem;
+  }
+
   .detail-layout,
   .invite-card {
     grid-template-columns: 1fr;

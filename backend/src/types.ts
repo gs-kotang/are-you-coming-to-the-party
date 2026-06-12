@@ -14,6 +14,13 @@ export interface InviteSummaryResponse {
   createdAt: string;
 }
 
+export interface PaginatedInvitesResponse {
+  invites: InviteSummaryResponse[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface InviteDetailResponse extends InviteSummaryResponse {
   shareUrl: string;
   rsvps: RsvpResponse[];

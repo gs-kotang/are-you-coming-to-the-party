@@ -9,6 +9,7 @@ import {
   CreateInviteResponse,
   InviteDetailResponse,
   InviteSummaryResponse,
+  PaginatedInvitesResponse,
 } from '../types';
 
 const router = Router();
@@ -145,15 +146,32 @@ router.post(
 
 router.get('/', authenticate, async (req: Request, res: Response) => {
   try {
-    const invites = await prisma.invite.findMany({
-      where: { userId: req.user!.uid },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        _count: { select: { rsvps: true } },
-      },
-    });
+    const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
+    const pageSize = Math.min(50, Math.max(1, parseInt(req.query.limit as string, 10) || 5));
+    const skip = (page - 1) * pageSize;
+    const where = { userId: req.user!.uid };
 
-    res.json(invites.map(toSummary));
+    const [invites, total] = await Promise.all([
+      prisma.invite.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: pageSize,
+        include: {
+          _count: { select: { rsvps: true } },
+        },
+      }),
+      prisma.invite.count({ where }),
+    ]);
+
+    const response: PaginatedInvitesResponse = {
+      invites: invites.map(toSummary),
+      total,
+      page,
+      pageSize,
+    };
+
+    res.json(response);
   } catch (error) {
     console.error('List invites error:', error);
     res.status(500).json({ error: 'Failed to list invites' });

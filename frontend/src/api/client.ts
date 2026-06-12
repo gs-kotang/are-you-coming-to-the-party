@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import {
   CreateInviteResult,
   InviteDetail,
-  InviteSummary,
+  PaginatedInvites,
   PublicInvite,
   Rsvp,
 } from '../types';
@@ -58,8 +58,10 @@ export async function createInvite(
   return response.data;
 }
 
-export async function fetchInvites(): Promise<InviteSummary[]> {
-  const response = await apiClient.get<InviteSummary[]>('/invites');
+export async function fetchInvites(page = 1, limit = 5): Promise<PaginatedInvites> {
+  const response = await apiClient.get<PaginatedInvites>('/invites', {
+    params: { page, limit },
+  });
   return response.data;
 }
 

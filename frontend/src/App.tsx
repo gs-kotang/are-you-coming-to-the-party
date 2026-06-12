@@ -3,7 +3,6 @@ import { useAuth } from './contexts/AuthContext';
 import { Login } from './components/Login';
 import { Home } from './components/Home';
 import { CreateInvite } from './components/CreateInvite';
-import { PastInvites } from './components/PastInvites';
 import { InviteDetailPage } from './components/InviteDetail';
 import { PublicRsvp } from './components/PublicRsvp';
 import './App.css';
@@ -84,14 +83,7 @@ function App() {
           </ProtectedLayout>
         }
       />
-      <Route
-        path="/invites"
-        element={
-          <ProtectedLayout>
-            <PastInvites />
-          </ProtectedLayout>
-        }
-      />
+      <Route path="/invites" element={<Navigate to="/" replace />} />
       <Route
         path="/invites/:id"
         element={
